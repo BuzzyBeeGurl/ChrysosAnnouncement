@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1 Million Samples — Chrysos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Roboto', sans-serif; box-sizing: border-box; }
+    body { margin: 0; background: #000; min-height: 100vh; }
+
+    /* SPLASH SCREEN */
+    @keyframes splashPulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(254,201,59,0.7); }
+      50% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(254,201,59,0.1); }
+    }
+    @keyframes splashFadeOut {
+      0% { opacity: 1; }
+      100% { opacity: 0; pointer-events: none; }
+    }
+    @keyframes contentFadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    #splash {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 99999;
+      cursor: pointer;
+    }
+    #splash.hiding {
+      animation: splashFadeOut 0.8s ease-out forwards;
+    }
+    .splash-logo {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #666c71;
+      margin-bottom: 2rem;
+    }
+    .splash-number {
+      font-size: 80px;
+      font-weight: 900;
+      color: #fec93b;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+    .splash-sub {
+      font-size: 16px;
+      color: #888;
+      margin-bottom: 3rem;
+    }
+    .splash-btn {
+      background: #fec93b;
+      color: #000;
+      border: none;
+      border-radius: 100px;
+      font-size: 18px;
+      font-weight: 900;
+      font-family: 'Roboto', sans-serif;
+      padding: 16px 44px;
+      cursor: pointer;
+      animation: splashPulse 2s ease-in-out infinite;
+    }
+    .splash-hint {
+      font-size: 12px;
+      color: #444;
+      margin-top: 1.25rem;
+      letter-spacing: 1px;
+    }
+
+    /* MAIN CONTENT */
+    #main-content {
+      opacity: 0;
+    }
+    #main-content.visible {
+      animation: contentFadeIn 0.8s ease-out 0.3s forwards;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(-30px) rotate(0deg) scale(1); opacity: 1; }
+      80% { opacity: 1; }
+      100% { transform: translateY(105vh) rotate(900deg) scale(0.5); opacity: 0; }
+    }
+    @keyframes burst {
+      0% { transform: scale(0) translate(0,0); opacity: 1; }
+      100% { transform: scale(1) translate(var(--tx), var(--ty)); opacity: 0; }
+    }
+    @keyframes fadeUp {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes popIn {
+      0% { transform: scale(0.85); opacity: 0; }
+      60% { transform: scale(1.03); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes numberPop {
+      0% { transform: scale(0.5) rotate(-4deg); opacity: 0; }
+      60% { transform: scale(1.1) rotate(1deg); }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+    @keyframes starSpin {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(180deg) scale(1.3); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+    }
+    @keyframes btnPulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(254,201,59,0.7), 0 0 0 0 rgba(254,201,59,0.4); }
+      50% { transform: scale(1.04); box-shadow: 0 0 0 12px rgba(254,201,59,0.2), 0 0 0 24px rgba(254,201,59,0.08); }
+    }
+
+    .page {
+      min-height: 100vh;
+      background: #000;
+      padding: 2rem 1rem 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-strip {
+      background: #fec93b;
+      border-radius: 16px;
+      text-align: center;
+      padding: 2rem 1.5rem 1.5rem;
+      max-width: 700px;
+      margin: 0 auto 1.5rem;
+      animation: popIn 0.7s ease-out forwards;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-strip::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 150px; height: 150px;
+      background: #f78d21;
+      border-radius: 50%;
+      opacity: 0.3;
+    }
+    .hero-strip::after {
+      content: '';
+      position: absolute;
+      bottom: -50px; left: -30px;
+      width: 120px; height: 120px;
+      background: #000;
+      border-radius: 50%;
+      opacity: 0.08;
+    }
+
+    .star-row {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 0.75rem;
+    }
+    .star {
+      font-size: 22px;
+      display: inline-block;
+      animation: starSpin 3s linear infinite;
+    }
+    .star:nth-child(2) { animation-delay: 0.4s; }
+    .star:nth-child(3) { animation-delay: 0.8s; }
+
+    .record-label {
+      background: #000;
+      color: #fec93b;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 5px 16px;
+      border-radius: 100px;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+
+    .big-number {
+      font-size: 72px;
+      font-weight: 900;
+      color: #000;
+      line-height: 1;
+      margin: 0 0 0.25rem;
+      animation: numberPop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+    }
+    .big-number span { color: #178884; }
+
+    .big-sub {
+      font-size: 20px;
+      font-weight: 700;
+      color: #000;
+      margin: 0 0 0.5rem;
+      animation: fadeUp 0.6s ease-out 0.4s both;
+      opacity: 0;
+    }
+    .big-cap {
+      font-size: 13px;
+      color: #333;
+      animation: fadeUp 0.6s ease-out 0.5s both;
+      opacity: 0;
+    }
+
+    .card {
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 16px;
+      padding: 2rem;
+      max-width: 700px;
+      margin: 0 auto 1.25rem;
+      animation: fadeUp 0.6s ease-out 0.4s both;
+      opacity: 0;
+    }
+    .card-accent {
+      border-left: 4px solid #fec93b;
+      padding-left: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+    .card p {
+      font-size: 15px;
+      line-height: 1.8;
+      color: #ccc;
+      margin: 0 0 1rem;
+    }
+    .card p:last-child { margin: 0; }
+    .card strong { color: #fec93b; font-weight: 700; }
+
+    .sign-off {
+      background: #178884;
+      border-radius: 16px;
+      padding: 1.5rem 2rem;
+      max-width: 700px;
+      margin: 0 auto 1.25rem;
+      animation: fadeUp 0.6s ease-out 0.7s both;
+      opacity: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .sign-off-text { font-size: 16px; font-weight: 700; color: #fff; }
+    .sign-off-name { font-size: 13px; color: rgba(255,255,255,0.75); margin-top: 4px; }
+    .next-mil {
+      background: #fec93b;
+      color: #000;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 10px 18px;
+      border-radius: 100px;
+      white-space: nowrap;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .btn-row {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 1rem 0 0.5rem;
+      animation: fadeUp 0.6s ease-out 0.8s both;
+      opacity: 0;
+    }
+    .celebrate-btn {
+      background: #fec93b;
+      color: #000;
+      border: none;
+      border-radius: 100px;
+      font-size: 20px;
+      font-weight: 900;
+      font-family: 'Roboto', sans-serif;
+      padding: 18px 48px;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      animation: btnPulse 2s ease-in-out infinite;
+      transition: transform 0.1s, background 0.15s;
+    }
+    .celebrate-btn:hover {
+      background: #f78d21;
+      animation: none;
+      transform: scale(1.07);
+    }
+    .celebrate-btn:active { transform: scale(0.96); }
+
+    .confetti-piece {
+      position: fixed;
+      border-radius: 2px;
+      animation: fall linear forwards;
+      pointer-events: none;
+      z-index: 9999;
+    }
+    .burst-dot {
+      position: fixed;
+      border-radius: 50%;
+      animation: burst 0.9s ease-out forwards;
+      pointer-events: none;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body>
+
+<audio id="celebrate-audio" src="celebrate.mp3" loop></audio>
+
+<!-- SPLASH SCREEN -->
+<div id="splash">
+  <div class="splash-logo">Chrysos</div>
+  <div class="splash-number">1,000,000</div>
+  <div class="splash-sub">We have some big news for you</div>
+  <button class="splash-btn" onclick="enterSite()">🎉 Click to celebrate!</button>
+  <div class="splash-hint">Turn your volume up</div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="main-content">
+  <div class="page">
+
+    <div class="hero-strip">
+      <div class="star-row">
+        <span class="star">★</span>
+        <span class="star">★</span>
+        <span class="star">★</span>
+      </div>
+      <div class="record-label">Company Record Broken</div>
+      <div class="big-number">1,000,000<span>!</span></div>
+      <div class="big-sub">Customer samples in a single month</div>
+      <div class="big-cap">A milestone we have never hit before — until now.</div>
+    </div>
+
+    <div class="card" style="animation-delay:0.45s">
+      <div class="card-accent">
+        <p>Hi team,</p>
+        <p>I'm <strong>thrilled</strong> to share some incredible news: last month, we achieved a company record — processing <strong>1 million customer samples in a month</strong> for the very first time.</p>
+      </div>
+      <p>This is a milestone we should all be incredibly proud of, and it didn't happen by accident. It's the result of the hard work, dedication, and expertise of <strong>every single person</strong> in this organisation. From those on the ground supporting the running of our fleet day in and day out, to the teams behind the scenes keeping our systems, logistics, and operations running smoothly.</p>
+      <p>Every role played a part in making this possible, and that's something worth celebrating.</p>
+      <p>Thank you for showing up, pushing through challenges, and continuing to raise the bar.</p>
+      <p style="font-size:17px;font-weight:700;color:#fec93b;margin:0">This record is yours. 🏆</p>
+    </div>
+
+    <div class="sign-off">
+      <div>
+        <div class="sign-off-text">Here's to the next million.</div>
+        <div class="sign-off-name">— Dirk and the Leadership Team</div>
+      </div>
+      <div class="next-mil">Next million, let's go!</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="celebrate-btn" onclick="launchConfetti()">🎉 Celebrate!</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const chrysos = ['#fec93b','#178884','#f78d21','#00aeef','#f0492a','#efe3bf','#666c71','#ffffff'];
+
+  function enterSite() {
+    const audio = document.getElementById('celebrate-audio');
+    audio.play();
+
+    const splash = document.getElementById('splash');
+    splash.classList.add('hiding');
+    setTimeout(() => { splash.style.display = 'none'; }, 800);
+
+    const main = document.getElementById('main-content');
+    main.classList.add('visible');
+
+    launchConfetti();
+  }
+
+  function launchConfetti() {
+    const vw = window.innerWidth;
+    const shapes = ['4px','50%','2px'];
+
+    for (let i = 0; i < 160; i++) {
+      setTimeout(() => {
+        const el = document.createElement('div');
+        el.className = 'confetti-piece';
+        el.style.borderRadius = shapes[Math.floor(Math.random() * shapes.length)];
+        const size = 6 + Math.random() * 10;
+        el.style.width = size + 'px';
+        el.style.height = size + 'px';
+        el.style.background = chrysos[Math.floor(Math.random() * chrysos.length)];
+        el.style.left = (Math.random() * vw) + 'px';
+        el.style.top = '-30px';
+        el.style.animationDuration = (1.8 + Math.random() * 2.5) + 's';
+        el.style.animationDelay = (Math.random() * 0.6) + 's';
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 5000);
+      }, i * 10);
+    }
+
+    for (let b = 0; b < 5; b++) {
+      setTimeout(() => {
+        const bx = 60 + Math.random() * (vw - 120);
+        const by = 60 + Math.random() * 300;
+        for (let d = 0; d < 20; d++) {
+          const dot = document.createElement('div');
+          dot.className = 'burst-dot';
+          const angle = (d / 20) * 2 * Math.PI;
+          const dist = 50 + Math.random() * 80;
+          dot.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
+          dot.style.setProperty('--ty', Math.sin(angle) * dist + 'px');
+          dot.style.width = dot.style.height = (5 + Math.random() * 7) + 'px';
+          dot.style.background = chrysos[Math.floor(Math.random() * chrysos.length)];
+          dot.style.left = bx + 'px';
+          dot.style.top = by + 'px';
+          dot.style.animationDuration = (0.7 + Math.random() * 0.5) + 's';
+          document.body.appendChild(dot);
+          setTimeout(() => dot.remove(), 1800);
+        }
+      }, b * 200);
+    }
+  }
+</script>
+
+</body>
+</html>
