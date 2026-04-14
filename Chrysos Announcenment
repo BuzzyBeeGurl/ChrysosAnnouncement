@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1 Million Samples Celebration!</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+        
+        :root {
+            --primary-gold: #D4AF37;
+            --secondary-copper: #B87333;
+            --earth-brown: #8B4513;
+            --dirt-dark: #4A4A4A;
+            --celebration-red: #FF6B6B;
+            --celebration-blue: #4ECDC4;
+            --celebration-yellow: #FFE66D;
+            --celebration-green: #95E1D3;
+            --jar-glass: rgba(135, 206, 235, 0.3);
+            --jar-rim: #A0A0A0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: radial-gradient(circle at 50% 50%, #1a1a2e, #16213e, #0f3460);
+            min-height: 100vh;
+            overflow: hidden;
+            font-family: 'Orbitron', monospace;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .celebration-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-title {
+            font-size: clamp(2.5rem, 8vw, 6rem);
+            font-weight: 900;
+            color: var(--primary-gold);
+            text-align: center;
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: translateY(-50px);
+            animation: titleReveal 1s ease-out 0.5s forwards;
+            text-shadow: 
+                0 0 10px var(--primary-gold),
+                0 0 20px var(--primary-gold),
+                0 0 40px var(--primary-gold);
+        }
+
+        .subtitle {
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            color: var(--secondary-copper);
+            text-align: center;
+            margin-bottom: 3rem;
+            opacity: 0;
+            animation: subtitleReveal 1s ease-out 1s forwards;
+            font-family: 'Space Mono', monospace;
+            letter-spacing: 2px;
+        }
+
+        .jar-container {
+            position: relative;
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .jar {
+            position: relative;
+            width: 500px;
+            height: 280px;
+            background: var(--jar-glass);
+            border: 3px solid var(--jar-rim);
+            border-radius: 0 0 40px 40px;
+            backdrop-filter: blur(5px);
+            box-shadow: 
+                inset 0 0 20px rgba(255,255,255,0.1),
+                0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .jar-lid {
+            position: absolute;
+            top: -40px;
+            left: -35px;
+            width: 570px;
+            height: 60px;
+            background: linear-gradient(45deg, var(--jar-rim), #C0C0C0);
+            border-radius: 20px;
+            box-shadow: 
+                0 5px 15px rgba(0,0,0,0.3),
+                inset 0 2px 5px rgba(255,255,255,0.3);
+            transform-origin: center;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .jar-lid:hover {
+            transform: scale(1.02);
+            box-shadow: 
+                0 8px 25px rgba(0,0,0,0.4),
+                inset 0 2px 5px rgba(255,255,255,0.4),
+                0 0 20px var(--primary-gold);
+        }
+
+        .jar-lid.clicked {
+            animation: lidUnscrew 4s ease-in-out forwards;
+            pointer-events: none;
+        }
+
+        .jar-lid::before {
+            content: 'PHOTONASSAY';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Space Mono', monospace;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dirt-dark);
+            letter-spacing: 2px;
+        }
+
+        .jar-lid::after {
+            content: '';
+            position: absolute;
+            top: 70%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 4px;
+            background: var(--dirt-dark);
+            border-radius: 2px;
+            box-shadow: 0 6px 0 var(--dirt-dark), 0 -6px 0 var(--dirt-dark);
+        }
+
+        .jar-contents {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 90%;
+            background: linear-gradient(
+                to top,
+                var(--earth-brown) 0%,
+                var(--dirt-dark) 40%,
+                var(--secondary-copper) 70%,
+                var(--primary-gold) 90%
+            );
+            border-radius: 0 0 37px 37px;
+            overflow: hidden;
+        }
+
+        .hidden-announcement {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: var(--primary-gold);
+            color: #000;
+            padding: 1.5rem 2rem;
+            border-radius: 20px;
+            font-family: 'Orbitron', monospace;
+            font-weight: 900;
+            text-align: center;
+            font-size: 1.6rem;
+            box-shadow: 
+                0 0 40px var(--primary-gold),
+                inset 0 2px 5px rgba(255,255,255,0.3);
+            border: 4px solid #FFD700;
+            z-index: 10;
+            opacity: 0;
+            line-height: 1.2;
+        }
+
+        .hidden-announcement.reveal {
+            animation: popOut 1.5s ease-out 1.5s forwards;
+        }
+
+        .sample-particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--primary-gold);
+            border-radius: 50%;
+            opacity: 0;
+        }
+
+        .dirt-explosion {
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 200px;
+            pointer-events: none;
+        }
+
+        .dirt-particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--earth-brown);
+            border-radius: 50%;
+            opacity: 0;
+        }
+
+        .confetti {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            opacity: 0;
+        }
+
+        .achievement-text {
+            position: absolute;
+            bottom: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: clamp(1rem, 2.5vw, 1.8rem);
+            color: var(--celebration-blue);
+            text-align: center;
+            opacity: 0;
+            font-family: 'Space Mono', monospace;
+            background: rgba(0,0,0,0.5);
+            padding: 1rem 2rem;
+            border-radius: 20px;
+            border: 2px solid var(--celebration-blue);
+        }
+
+        .achievement-text.show {
+            animation: achievementReveal 1s ease-out forwards;
+        }
+
+        .click-instruction {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: clamp(1.2rem, 2.5vw, 2rem);
+            color: var(--primary-gold);
+            text-align: center;
+            font-family: 'Orbitron', monospace;
+            animation: pulse 1.5s ease-in-out infinite;
+            text-shadow: 0 0 15px var(--primary-gold);
+            opacity: 0.95;
+            font-weight: 700;
+            line-height: 1.4;
+            background: rgba(0,0,0,0.4);
+            padding: 1.5rem 2rem;
+            border-radius: 20px;
+            border: 2px solid var(--primary-gold);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .click-instruction.hidden {
+            display: none;
+        }
+
+        /* Animations */
+        @keyframes titleReveal {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes subtitleReveal {
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes jarEntrance {
+            from {
+                transform: scale(0.8) translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes lidUnscrew {
+            0% {
+                transform: rotate(0deg) translateY(0) translateX(0);
+            }
+            15% {
+                transform: rotate(-360deg) translateY(0) translateX(0);
+            }
+            30% {
+                transform: rotate(-720deg) translateY(-10px) translateX(20px);
+            }
+            45% {
+                transform: rotate(-1080deg) translateY(-30px) translateX(60px);
+            }
+            60% {
+                transform: rotate(-1440deg) translateY(-60px) translateX(120px);
+            }
+            80% {
+                transform: rotate(-1800deg) translateY(-100px) translateX(200px);
+            }
+            100% {
+                transform: rotate(-2160deg) translateY(-150px) translateX(400px);
+                opacity: 0;
+            }
+        }
+
+        @keyframes achievementReveal {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        @keyframes popOut {
+            0% {
+                transform: translate(-50%, -50%) scale(0) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.3) rotate(5deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes sparkle {
+            0%, 100% { 
+                transform: scale(0) rotate(0deg);
+                opacity: 0;
+            }
+            50% { 
+                transform: scale(1) rotate(180deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes dirtExplode {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--dx), var(--dy)) scale(0.5);
+                opacity: 0;
+            }
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                transform: scale(1);
+            }
+            50% { 
+                transform: scale(1.05);
+            }
+        }
+
+        .main-title {
+            animation: titleReveal 1s ease-out 0.5s forwards;
+        }
+
+        .main-title.celebrate {
+            animation: titleReveal 1s ease-out 0.5s forwards, pulse 2s ease-in-out infinite;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .jar-container {
+                transform: scale(0.7);
+            }
+            
+            .hidden-announcement {
+                font-size: 1.2rem;
+                padding: 1rem 1.5rem;
+            }
+            
+            .click-instruction {
+                font-size: clamp(1rem, 2vw, 1.5rem);
+                padding: 1rem 1.5rem;
+                top: 15%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .jar-container {
+                transform: scale(0.5);
+            }
+            
+            .hidden-announcement {
+                font-size: 1rem;
+                padding: 0.8rem 1rem;
+            }
+            
+            .click-instruction {
+                font-size: clamp(0.9rem, 1.8vw, 1.2rem);
+                padding: 0.8rem 1rem;
+                top: 10%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="celebration-container">
+        <h1 class="main-title" style="display: none;">1 MILLION</h1>
+        
+        <div class="jar-container">
+            <div class="jar">
+                <div class="jar-lid"></div>
+                <div class="jar-contents">
+                    <div class="sample-particles"></div>
+                    <div class="hidden-announcement">
+                        🎉 WE'VE REACHED<br>
+                        <strong>1 MILLION</strong><br>
+                        PHOTONASSAY SAMPLES! 🎉
+                    </div>
+                </div>
+                <div class="dirt-explosion"></div>
+            </div>
+        </div>
+        
+        <div class="confetti"></div>
+        
+        <div class="click-instruction">
+            🔬 CHRYSOS HAS AN EXCITING ANNOUNCEMENT! 🔬<br>
+            <small>Click the jar lid to reveal</small>
+        </div>
+    </div>
+
+    <script>
+        let celebrationTriggered = false;
+
+        // Create sample particles in jar
+        function createSampleParticles() {
+            const container = document.querySelector('.sample-particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.bottom = Math.random() * 80 + '%';
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                particle.style.animation = `sparkle 3s ease-in-out ${Math.random() * 2}s infinite`;
+                container.appendChild(particle);
+            }
+        }
+
+        // Create dirt explosion particles
+        function createDirtExplosion() {
+            const container = document.querySelector('.dirt-explosion');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'dirt-particle';
+                
+                const angle = (Math.PI * 2 * i) / 30;
+                const velocity = 100 + Math.random() * 100;
+                const dx = Math.cos(angle) * velocity + 'px';
+                const dy = Math.sin(angle) * velocity - 100 + 'px';
+                
+                particle.style.setProperty('--dx', dx);
+                particle.style.setProperty('--dy', dy);
+                particle.style.left = '50%';
+                particle.style.top = '50%';
+                particle.style.animation = `dirtExplode 2s ease-out forwards`;
+                particle.style.animationDelay = Math.random() * 0.5 + 's';
+                
+                container.appendChild(particle);
+            }
+        }
+
+        // Create confetti burst
+        function createConfetti() {
+            const container = document.querySelector('.confetti');
+            const colors = ['var(--celebration-red)', 'var(--celebration-blue)', 
+                           'var(--celebration-yellow)', 'var(--celebration-green)', 
+                           'var(--primary-gold)', 'var(--secondary-copper)'];
+            
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti-piece';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animation = `confettiFall ${3 + Math.random() * 2}s linear forwards`;
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                
+                // Random shapes
+                if (Math.random() > 0.5) {
+                    confetti.style.borderRadius = '50%';
+                } else {
+                    confetti.style.transform = 'rotate(45deg)';
+                }
+                
+                container.appendChild(confetti);
+
+                // Clean up confetti after animation
+                setTimeout(() => {
+                    if (confetti.parentNode) {
+                        confetti.parentNode.removeChild(confetti);
+                    }
+                }, 6000);
+            }
+        }
+
+        // Add continuous confetti bursts after initial celebration
+        function continuousConfetti() {
+            const container = document.querySelector('.confetti');
+            const colors = ['var(--celebration-red)', 'var(--celebration-blue)', 
+                           'var(--celebration-yellow)', 'var(--celebration-green)', 
+                           'var(--primary-gold)', 'var(--secondary-copper)'];
+            
+            for (let i = 0; i < 20; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti-piece';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animation = `confettiFall ${2 + Math.random()}s linear forwards`;
+                
+                if (Math.random() > 0.5) {
+                    confetti.style.borderRadius = '50%';
+                }
+                
+                container.appendChild(confetti);
+                
+                // Clean up old confetti
+                setTimeout(() => {
+                    if (confetti.parentNode) {
+                        confetti.parentNode.removeChild(confetti);
+                    }
+                }, 3000);
+            }
+        }
+
+        // Main celebration function triggered by click
+        function triggerCelebration() {
+            if (celebrationTriggered) return;
+            celebrationTriggered = true;
+
+            const lid = document.querySelector('.jar-lid');
+            const hiddenAnnouncement = document.querySelector('.hidden-announcement');
+            const clickInstruction = document.querySelector('.click-instruction');
+
+            // Hide click instruction
+            clickInstruction.classList.add('hidden');
+
+            // Trigger lid animation
+            lid.classList.add('clicked');
+
+            // Reveal the hidden announcement after lid starts moving
+            setTimeout(() => {
+                hiddenAnnouncement.classList.add('reveal');
+            }, 1200);
+
+            // Start dirt explosion after announcement appears
+            setTimeout(() => {
+                createDirtExplosion();
+            }, 3000);
+
+            // Start confetti after dirt explosion
+            setTimeout(() => {
+                createConfetti();
+            }, 3500);
+
+            // Start continuous confetti
+            setTimeout(() => {
+                const confettiInterval = setInterval(continuousConfetti, 2000);
+                // Stop continuous confetti after 25 seconds
+                setTimeout(() => {
+                    clearInterval(confettiInterval);
+                }, 25000);
+            }, 4000);
+        }
+
+        // Add click event listener to the jar lid
+        document.addEventListener('DOMContentLoaded', () => {
+            createSampleParticles();
+            
+            const lid = document.querySelector('.jar-lid');
+            lid.addEventListener('click', triggerCelebration);
+
+            // Also allow clicking anywhere on the jar for easier interaction
+            const jar = document.querySelector('.jar');
+            jar.addEventListener('click', triggerCelebration);
+            jar.style.cursor = 'pointer';
+        });
+    </script>
+</body>
+</html>
