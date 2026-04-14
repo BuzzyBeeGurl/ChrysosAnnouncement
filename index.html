@@ -41,10 +41,6 @@
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.06); }
     }
-    @keyframes wiggle {
-      0%, 100% { transform: rotate(-3deg); }
-      50% { transform: rotate(3deg); }
-    }
     @keyframes btnPulse {
       0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(254,201,59,0.7), 0 0 0 0 rgba(254,201,59,0.4); }
       50% { transform: scale(1.04); box-shadow: 0 0 0 12px rgba(254,201,59,0.2), 0 0 0 24px rgba(254,201,59,0.08); }
@@ -164,30 +160,6 @@
     .card p:last-child { margin: 0; }
     .card strong { color: #fec93b; font-weight: 700; }
 
-    .pillars {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      max-width: 700px;
-      margin: 0 auto 1.25rem;
-      animation: fadeUp 0.6s ease-out 0.6s both;
-      opacity: 0;
-    }
-    .pillar {
-      background: #111;
-      border: 1px solid #222;
-      border-radius: 12px;
-      padding: 1.1rem 1rem;
-      text-align: center;
-      transition: transform 0.2s;
-    }
-    .pillar:hover { transform: translateY(-3px); }
-    .pillar-icon { font-size: 28px; margin-bottom: 8px; display: inline-block; animation: wiggle 2s ease-in-out infinite; }
-    .pillar:nth-child(2) .pillar-icon { animation-delay: 0.3s; }
-    .pillar:nth-child(3) .pillar-icon { animation-delay: 0.6s; }
-    .pillar-label { font-size: 12px; font-weight: 700; color: #fec93b; text-transform: uppercase; letter-spacing: 1px; }
-    .pillar-desc { font-size: 12px; color: #888; margin-top: 4px; line-height: 1.4; }
-
     .sign-off {
       background: #178884;
       border-radius: 16px;
@@ -278,30 +250,9 @@
   <div class="card" style="animation-delay:0.45s">
     <div class="card-accent">
       <p>Hi team,</p>
-      <p>I'm <strong>thrilled</strong> to share some incredible news — last month, we achieved a company record, processing <strong>1 million customer samples in a month</strong> for the very first time.</p>
+      <p>I'm <strong>thrilled</strong> to share some incredible news: last month, we achieved a company record — processing <strong>1 million customer samples in a month</strong> for the very first time.</p>
     </div>
-    <p>This is a milestone we should all be incredibly proud of, and it didn't happen by accident. It's the result of the hard work, dedication, and expertise of <strong>every single person</strong> in this organisation.</p>
-  </div>
-
-  <div class="pillars">
-    <div class="pillar">
-      <div class="pillar-icon">🚛</div>
-      <div class="pillar-label">Fleet</div>
-      <div class="pillar-desc">Keeping operations running day in, day out</div>
-    </div>
-    <div class="pillar">
-      <div class="pillar-icon">⚙️</div>
-      <div class="pillar-label">Systems</div>
-      <div class="pillar-desc">Behind the scenes, keeping everything humming</div>
-    </div>
-    <div class="pillar">
-      <div class="pillar-icon">📦</div>
-      <div class="pillar-label">Logistics</div>
-      <div class="pillar-desc">Moving the pieces that made this possible</div>
-    </div>
-  </div>
-
-  <div class="card" style="animation-delay:0.65s;opacity:0">
+    <p>This is a milestone we should all be incredibly proud of, and it didn't happen by accident. It's the result of the hard work, dedication, and expertise of <strong>every single person</strong> in this organisation. From those on the ground supporting the running of our fleet day in and day out, to the teams behind the scenes keeping our systems, logistics, and operations running smoothly.</p>
     <p>Every role played a part in making this possible, and that's something worth celebrating.</p>
     <p>Thank you for showing up, pushing through challenges, and continuing to raise the bar.</p>
     <p style="font-size:17px;font-weight:700;color:#fec93b;margin:0">This record is yours. 🏆</p>
