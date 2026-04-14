@@ -276,6 +276,9 @@
   const chrysos = ['#fec93b','#178884','#f78d21','#00aeef','#f0492a','#efe3bf','#666c71','#ffffff'];
 
   function launchConfetti() {
+  const audio = document.getElementById('celebrate-audio');
+  audio.currentTime = 0;
+  audio.play();
     const vw = window.innerWidth;
     const shapes = ['4px','50%','2px'];
 
@@ -322,6 +325,6 @@
 
   setTimeout(launchConfetti, 600);
 </script>
-
+<audio id="celebrate-audio" src="Celebrateaudio.mp3" loop></audio>
 </body>
 </html>
